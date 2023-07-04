@@ -66,6 +66,11 @@ Route::delete('usuarios/{id}', [\App\Http\Controllers\UserController::class, 'de
 
 
 
+/*Rotas para Venda*/
+
+Route::get('vendas', [\App\Http\Controllers\VendaController::class, 'create']) ->name('usuario/create');
+Route::post('vendas/salvar', [\App\Http\Controllers\UserController::class, 'store'])->name('usuario/index');
+
 
 
 Route::get('home', function () {return view('home/home');

@@ -1,5 +1,5 @@
 <html>
-<title>System</title>
+<title>Sistema</title>
 <link rel="stylesheet" href="{{url('assets/bootstrap/css/bootstrap.min.css')}}">
 <html>
 <head>
@@ -31,7 +31,14 @@
     ul {
         list-style: none;
     }
-
+    span{
+        color:white;
+    }
+    body {
+            background-image: url("public/assets/img/background.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+    }
 
 </style>
 
@@ -42,8 +49,16 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <button type="button" class="btn btn-secondary position-relative">
+            Notificações
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                5+
+                <span class="visually-hidden">unread messages</span>
+             </span>    
+        </button>
     </div>
 </nav>
+
 @yield('content')
 
 <div class="modal true" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -63,7 +78,7 @@
                     <li><a href="departamentos" class="list-group-item">Departamentos</a></li>
                     <li><a href="marcas" class="list-group-item">Marcas</a></li>
                     <li><a href="usuarios" class="list-group-item">Usuarios</a></li>
-                    <li><a href="usuarios" class="list-group-item">Venda</a></li>
+                    <li><a href="vendas" class="list-group-item">Venda</a></li>
                 </ul>
 
             </div>
