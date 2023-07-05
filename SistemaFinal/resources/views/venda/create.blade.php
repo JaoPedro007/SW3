@@ -52,26 +52,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produto_selecionado'])) {
-                    $produtoSelecionado = $_POST['produto_selecionado'];
-                    $descricao = $produtoSelecionado['descricao'];
-                    $quantidade = $produtoSelecionado['1'];
-                    $valorVenda = $produtoSelecionado['valor_venda'];
+                     <!--Function do Javascript-->
 
-                    echo '<tr>';
-                    echo '<td>' . $descricao . '</td>';
-                    echo '<td>' . "1" . '</td>';
-                    echo '<td>' . $valorVenda . '</td>';
-                    echo '</tr>';
-                }
-                ?>
                 </tbody>
 
             </table>
             <!--Totalizadores e nome do cliente-->
             <div id='input-total' class="input-group mb-3">
-                <input type="string" placeholder="Cliente: " style="width: 20em">
+                <input id="clienteInput" type="string" placeholder="Cliente: " style="width: 20em">
                 <input id="valor_total" type="int" placeholder="Total:" style="width: 7em; margin-left:10px" readonly>
             </div>
 
@@ -148,6 +136,7 @@
                             <table class="table table-light table-hover">
                                 <thead>
                                 <tr>
+                                    <th scope="col">ID</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">CPF/CNPJ</th>
                                     <th scope="col">Endereço</th>
@@ -156,6 +145,8 @@
                                 <tbody>
                                 @foreach ($listarClientesModal as $cliente)
                                     <tr>
+                                    <td><input type="checkbox" name="idCliente" value="{{ $cliente->id}}"></td>
+
                                         <td>{{ $cliente->nome }}</td>
                                         <td>{{ $cliente->cpfCnpj }}</td>
                                         <td>{{ $cliente->cidade . " " . $cliente->estado }}</td>
@@ -166,7 +157,7 @@
                             <div class="modal-footer">
 
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                <button type="button" class="btn btn-primary">Adicionar</button>
+                                <button type="button" class="btn btn-primary" onclick="adicionarCliente()">Adicionar</button>
                             </div>
                         </div>
                     </div>
@@ -183,34 +174,56 @@
     </div>
 
     <script>
-        function listarProdutos() {
-            // Obtenha o valor selecionado do produto
-            var produtoSelecionado = {
-                descricao: '',
-                quantidade: '',
-                valor_venda: ''
-            };
+    function adicionarCliente() {
+        // Obter o elemento de input do cliente
+        var clienteInput = document.getElementById('clienteInput');
 
-            var checkboxes = document.querySelectorAll('input[name="idProduto"]:checked');
-            if (checkboxes.length > 0) {
-                var selectedCheckbox = checkboxes[0];
-                var row = selectedCheckbox.closest('tr');
-                var columns = row.getElementsByTagName('td');
+        // Obter a lista de checkboxes
+        var checkboxes = document.querySelectorAll('input[name="idCliente"]:checked');
 
-                produtoSelecionado.descricao = columns[1].textContent;
-                produtoSelecionado.quantidade = columns[2].textContent;
-                produtoSelecionado.valor_venda = columns[3].textContent;
+        // Verificar se algum cliente foi selecionado
+        if (checkboxes.length > 0) {
+            // Obter o nome do primeiro cliente selecionado
+            var nomeCliente = checkboxes[0].parentNode.nextElementSibling.textContent;
 
-                // Adicione o produto na tabela
-                var tbody = document.querySelector('table tbody');
-                var newRow = document.createElement('tr');
-                newRow.innerHTML = '<td>' + produtoSelecionado.descricao + '</td>' +
-                    '<td>' + produtoSelecionado.quantidade + '</td>' +
-                    '<td>' + produtoSelecionado.valor_venda + '</td>';
-                tbody.appendChild(newRow);
-            }
+            // Atualizar o valor do input do cliente
+            clienteInput.value = nomeCliente;
         }
 
+        // Fechar o modal
+        var modalCliente = document.getElementById('modalCliente');
+        var bootstrapModal = bootstrap.Modal.getInstance(modalCliente);
+        bootstrapModal.hide();
+    }
+
+    function listarProdutos() {
+        // Obtenha o valor selecionado do produto
+        var produtoSelecionado = {
+            descricao: '',
+            quantidade: '',
+            valor_venda: ''
+        };
+
+        var checkboxes = document.querySelectorAll('input[name="idProduto"]:checked');
+        if (checkboxes.length > 0) {
+            var selectedCheckbox = checkboxes[0];
+            var row = selectedCheckbox.closest('tr');
+            var columns = row.getElementsByTagName('td');
+
+            produtoSelecionado.descricao = columns[1].textContent;
+            produtoSelecionado.quantidade = columns[2].textContent;
+            produtoSelecionado.valor_venda = columns[3].textContent;
+
+            // Adicione o produto na tabela
+            var tbody = document.querySelector('table tbody');
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = '<td>' + produtoSelecionado.descricao + '</td>' +
+                '<td>' + 1 + '</td>' +
+                '<td>' + produtoSelecionado.valor_venda + '</td>';
+            tbody.appendChild(newRow);
+        }
+
+    }
     </script>
 </body>
 </html>
