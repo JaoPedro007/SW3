@@ -11,22 +11,29 @@ use Illuminate\Http\Request;
 class VendaController extends Controller
 
 {
-    public function produtosModal()
+    public function produtoseClienteModal()
     {
         $listarProdutosModal = ModelProduto::all();
-        return view("venda/create", compact('listarProdutosModal'));
-    }
-
-
-    public function clientesModal()
-    {
         $listarClientesModal = ModelCliente::all();
-        return view("venda/create", compact('listarClientesModal'));
 
+        return view("venda.create", compact('listarProdutosModal', 'listarClientesModal'));
     }
 
+    public function adicionarProduto(Request $request)
+    {
+        $produtoSelecionado = $request->json()->all();
 
+        // Faça o processamento necessário com os dados do produto selecionado
 
+        // Retorne a resposta com o HTML da linha da tabela do produto adicionado
+        $linhaTabela = '<tr>';
+        $linhaTabela .= '<td>' . $produtoSelecionado['descricao'] . '</td>';
+        $linhaTabela .= '<td>' . $produtoSelecionado['quantidade'] . '</td>';
+        $linhaTabela .= '<td>' . $produtoSelecionado['valor_venda'] . '</td>';
+        $linhaTabela .= '</tr>';
+
+        return response($linhaTabela);
+    }
 
     public function create()
     {

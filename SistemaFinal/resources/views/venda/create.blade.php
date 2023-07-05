@@ -1,9 +1,11 @@
 @extends('templates.template')
 @section('content')
+<html>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <html>
-    <head></head>
-    <body>
+</head>
+<body>
     <style>
         #btn-produto, #btn-cliente, #btn-pagamento, #btn-finalizar {
             margin-left: 1%;
@@ -39,16 +41,6 @@
     <h1 class="text-center">PDV</h1>
     <hr>
 
-    <?php
-
-
-    $total = 0;
-
-//foreach ($produtos as $produto) {
-//    $total += $produto[2];
-//}
-
-    ?>
     <div class="col-8 m-auto">
         <form name="formCad" id="formCad" method="post" action="{{url('vendas/finalizar')}}">
             <table class="table">
@@ -60,15 +52,27 @@
                 </tr>
                 </thead>
                 <tbody>
+                <?php
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produto_selecionado'])) {
+                    $produtoSelecionado = $_POST['produto_selecionado'];
+                    $descricao = $produtoSelecionado['descricao'];
+                    $quantidade = $produtoSelecionado['1'];
+                    $valorVenda = $produtoSelecionado['valor_venda'];
 
+                    echo '<tr>';
+                    echo '<td>' . $descricao . '</td>';
+                    echo '<td>' . "1" . '</td>';
+                    echo '<td>' . $valorVenda . '</td>';
+                    echo '</tr>';
+                }
+                ?>
                 </tbody>
 
             </table>
             <!--Totalizadores e nome do cliente-->
             <div id='input-total' class="input-group mb-3">
                 <input type="string" placeholder="Cliente: " style="width: 20em">
-                <input type="int" value='<?php echo $total; ?>' placeholder="Total:"
-                       style="width: 7em; margin-left:10px" readonly>
+                <input id="valor_total" type="int" placeholder="Total:" style="width: 7em; margin-left:10px" readonly>
             </div>
 
             <div class="input-group mb-3">
@@ -88,29 +92,37 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
+
                             <table class="table table-light table-hover">
                                 <thead>
                                 <tr>
+                                    <th scope="col">ID</th>
                                     <th scope="col">Descrição</th>
                                     <th scope="col">Quantidade</th>
                                     <th scope="col">Valor venda</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach ($listarProdutosModal as $produto): ?>
-                                <tr>
-                                    <td><?php echo $produto->descricao; ?></td>
-                                    <td>1</td>
-                                    <td>R$ <?php echo $produto->valorVenda; ?></td>
-                                </tr>
-                                <?php endforeach; ?>
+
+
+                                @foreach ($listarProdutosModal as $produto)
+                                    <tr >
+                                        <td><input type="checkbox" name="idProduto" value="{{ $produto->id}}"></td>
+                                        <td>{{ $produto->descricao }}</td>
+                                        <td>{{$produto->quantidade}}</td>
+                                        <td>R$ {{ $produto->valorVenda }}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
+
+
+
                             </table>
                             <div class="modal-footer">
 
 
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                <button type="button" class="btn btn-primary">Adicionar</button>
+                                <button type="button" class="btn btn-primary" onclick="listarProdutos(), calcularValorTotal()">Adicionar</button>
                             </div>
                         </div>
                     </div>
@@ -142,13 +154,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach ($listarClientesModal as $cliente): ?>
-                                <tr>
-                                    <td><?php echo $cliente->nome; ?></td>
-                                    <td><?php echo $cliente->cpfCnpj; ?></td>
-                                    <td><?php echo $cliente->cidade . " " . $cliente->estado; ?></td>
-                                </tr>
-                                <?php endforeach; ?>
+                                @foreach ($listarClientesModal as $cliente)
+                                    <tr>
+                                        <td>{{ $cliente->nome }}</td>
+                                        <td>{{ $cliente->cpfCnpj }}</td>
+                                        <td>{{ $cliente->cidade . " " . $cliente->estado }}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                             <div class="modal-footer">
@@ -170,8 +182,37 @@
         </form>
     </div>
 
-    </body>
+    <script>
+        function listarProdutos() {
+            // Obtenha o valor selecionado do produto
+            var produtoSelecionado = {
+                descricao: '',
+                quantidade: '',
+                valor_venda: ''
+            };
 
-    </html>
+            var checkboxes = document.querySelectorAll('input[name="idProduto"]:checked');
+            if (checkboxes.length > 0) {
+                var selectedCheckbox = checkboxes[0];
+                var row = selectedCheckbox.closest('tr');
+                var columns = row.getElementsByTagName('td');
+
+                produtoSelecionado.descricao = columns[1].textContent;
+                produtoSelecionado.quantidade = columns[2].textContent;
+                produtoSelecionado.valor_venda = columns[3].textContent;
+
+                // Adicione o produto na tabela
+                var tbody = document.querySelector('table tbody');
+                var newRow = document.createElement('tr');
+                newRow.innerHTML = '<td>' + produtoSelecionado.descricao + '</td>' +
+                    '<td>' + produtoSelecionado.quantidade + '</td>' +
+                    '<td>' + produtoSelecionado.valor_venda + '</td>';
+                tbody.appendChild(newRow);
+            }
+        }
+
+    </script>
+</body>
+</html>
 
 @endsection

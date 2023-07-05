@@ -60,7 +60,7 @@ Route::delete('clientes/{id}', [\App\Http\Controllers\ClienteController::class, 
 Route::get('usuarios', [\App\Http\Controllers\UserController::class, 'index']) ->name('usuario/index');
 Route::get('usuarios/cadastrar', [\App\Http\Controllers\UserController::class, 'create']) ->name('usuario/create');
 Route::post('usuarios/salvar', [\App\Http\Controllers\UserController::class, 'store'])->name('usuario/index');
-Route::get('usuarios/{id}/editar', [\App\Http\Controllers\UserController::class, 'edit'])->name('usuario/edit');
+Route::get('usuarios/{id}/{id2}/editar', [\App\Http\Controllers\UserController::class, 'edit'])->name('usuario/edit');
 Route::put('usuarios/{id}/salvar', [\App\Http\Controllers\UserController::class, 'update'])->name('usuario/index');
 Route::delete('usuarios/{id}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('usuario/index');
 
@@ -68,8 +68,10 @@ Route::delete('usuarios/{id}', [\App\Http\Controllers\UserController::class, 'de
 
 /*Rotas para Venda*/
 
-Route::get('vendas', [\App\Http\Controllers\VendaController::class, 'produtosModal']) ->name('venda/create');
-Route::get('vendas', [\App\Http\Controllers\VendaController::class, 'clientesModal']) ->name('venda/create');
+Route::get('vendas', [\App\Http\Controllers\VendaController::class, 'produtoseClienteModal'])->name('telaInicial');
+Route::get('adicionarProdutosTabela', [\App\Http\Controllers\VendaController::class, 'adicionarProduto'])->name('adicionarProdutosTabela');
+
+
 
 Route::post('vendas/salvar', [\App\Http\Controllers\UserController::class, 'store'])->name('usuario/index');
 
@@ -79,10 +81,35 @@ Route::get('/home', function () {
     return view('home/home');
 })->middleware(['auth', 'verified'])->name('home');
 
+Route::get('/clientes', function () {
+    return view('cliente/index');
+})->middleware(['auth', 'verified'])->name('cliente');
 
+Route::get('/produtos', function () {
+    return view('produto/index');
+})->middleware(['auth', 'verified'])->name('produto');
+
+Route::get('/usuarios', function () {
+    return view('usuario/index');
+})->middleware(['auth', 'verified'])->name('usuario');
+
+Route::get('/marcas', function () {
+    return view('marca/index');
+})->middleware(['auth', 'verified'])->name('marca');
+
+Route::get('/departamentos', function () {
+    return view('departamento/index');
+})->middleware(['auth', 'verified'])->name('departamento');
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/clientes', [\App\Http\Controllers\ClienteController::class, 'index'])->name('cliente/index');
+    Route::get('/produtos', [\App\Http\Controllers\ProdutoController::class, 'index'])->name('produto/index');
+    Route::get('/usuarios', [\App\Http\Controllers\UserController::class, 'index'])->name('usuario/index');
+    Route::get('/marcas', [\App\Http\Controllers\MarcaController::class, 'index'])->name('marca/index');
+    Route::get('/departamentos', [\App\Http\Controllers\DepartamentoController::class, 'index'])->name('departamento/index');
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
