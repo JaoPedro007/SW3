@@ -3,3 +3,8 @@ cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan serve
+npm install
+npm run dev
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'João Pedro', 'joaopedrorodriguesleite9@gmail.com', NULL, '$2y$10$S5xIHUG18m1s0tj/RjIfD.U/4AxkW097CAm0y2sTCAXI6SEWpuiPC', NULL, '2023-07-05 14:20:56', '2023-07-05 14:20:56');

@@ -34,11 +34,6 @@
         span{
             color:white;
         }
-        body {
-                background-image: url("public/assets/img/background.png");
-                background-repeat: no-repeat;
-                background-size: cover;
-        }
 
     </style>
 
